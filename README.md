@@ -1,4 +1,5 @@
 API Monitoring System
+
 A web-based API monitoring dashboard that helps you check whether public APIs are responding correctly, track response times, review failures, and optionally receive email alerts when scheduled checks fail.
 
 Features
@@ -50,5 +51,4 @@ Future Improvements
 - Advanced uptime reports and charts
 - Stronger production monitoring and deployment options
   
-Author
-Vaibhavi Balpande
+
