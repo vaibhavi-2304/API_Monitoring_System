@@ -1,52 +1,54 @@
-# API Monitoring Dashboard
+API Monitoring System
+A web-based API monitoring dashboard that helps you check whether public APIs are responding correctly, track response times, review failures, and optionally receive email alerts when scheduled checks fail.
 
-A fresher-friendly API monitoring project built with HTML, CSS, vanilla JavaScript, Node.js, Express, MongoDB, and Mongoose. The frontend and backend are separate folders; Express serves the frontend at `http://localhost:5000`.
-
-## Features
-
-- Manual HTTP GET checks with response-time measurement, status code, timeout handling, and network error recording.
-- Optional JSON response validation for manual checks.
-- Scheduled background checks using `node-cron`; each monitor has a configurable interval from 1 minute to 24 hours.
-- Monitor management: add, edit URL/rules, pause, resume, and delete.
-- Per-monitor expected HTTP status and slow-response threshold.
-- MongoDB check history with timestamps, source (manual/scheduled), status, latency, and error details.
-- Dashboard statistics: total/successful/failed checks, average response time, active monitors, and scheduled-check success rate for the last 7 days.
-- Recent failure/incident list and consecutive-failure tracking.
-- Optional email alerts after two consecutive scheduled failures, rate-limited to one alert per monitor per 30 minutes.
-- Filter history by status, source, and URL; export visible history to CSV or export a monitor's full recent history from its action.
-- Timeout support and public-URL validation to reduce server-side request forgery risk.
-
-## Requirements
-
+Features
+- Manual API checks: Run an HTTP GET check and view the response status, response time, and any network or timeout error.
+- Scheduled monitoring: Automatically check saved monitors in the background using configurable intervals.
+- Monitor management: Add, edit, pause, resume, and delete monitors.
+- Expected status and latency rules: Configure the expected HTTP status code and a slow-response threshold for each monitor.
+- Check history: Store timestamped results in MongoDB, including check source, status, response time, and error details.
+- Dashboard statistics: View check totals, successful and failed checks, average response time, active monitors, and the scheduled-check success rate for the last 7 days.
+- Incident tracking: Review recent failures and consecutive-failure information.
+- Optional email alerts: Send an alert after consecutive scheduled failures when SMTP is configured.
+- History filters and exports: Filter results by status, source, or URL, and export visible history to CSV.
+- Timeout and URL validation: Handle slow or unreachable endpoints and validate public URLs before checking them.
+Tech Stack
+- Frontend: HTML, CSS, JavaScript
+- Backend: Node.js, Express.js
+- Database: MongoDB, Mongoose
+- Scheduling: node-cron
+- Email notifications: SMTP (optional)
+Project Structure
+API_Monitoring_System/
+├── backend/       # Express server, monitoring logic, routes, and database models
+├── frontend/      # Dashboard interface (HTML, CSS, JavaScript)
+├── .gitignore
+└── README.md
+Requirements
 - Node.js 18 or newer
 - MongoDB running locally or a MongoDB connection string
-
-## Run locally
-
-1. Extract the ZIP.
-2. Open a terminal in `api-monitoring-dashboard/backend`.
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-4. Copy `.env.example` to `.env` and set `MONGO_URI`.
-5. Start the app:
-   ```bash
-   npm start
-   ```
-6. Open `http://localhost:5000`.
-
-The backend must remain running for scheduled monitoring. The dashboard refreshes its display every 30 seconds; the backend scheduler checks due monitors once per minute and uses each monitor's interval to determine when it is due. Checks run in the backend, not in the browser.
-
-## Optional email alerts
-
-Dashboard incident history works without email configuration. To enable email, fill in `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `ALERT_EMAIL_FROM`, and `ALERT_EMAIL_TO` in `.env`. Use credentials for an SMTP account you control. Never commit `.env` or real credentials.
-
-## Important behavior
-
-- Manual checks consider any 2xx response healthy unless JSON validation is enabled and fails.
-- Scheduled monitors use the configured expected status code (default 200). If the response does not match, or the configured latency threshold is exceeded, the check is marked DOWN.
-- The displayed scheduled success rate is calculated from recorded scheduled checks across all monitors in the last seven days; it is not a time-weighted SLA and is not an individual per-monitor uptime guarantee.
-- Each check uses GET. The project does not currently configure POST bodies or API authentication headers.
-- Public HTTP/HTTPS URLs are accepted. Localhost and private network destinations are blocked by URL validation, so don't use this hosted-style monitor to probe private systems.
-- This is an educational starter project. For production use, add authentication/authorization, rate limits, robust DNS-rebinding protections, and a persistent job queue or distributed scheduler if running multiple backend instances.
+- npm
+  
+How Monitoring Works
+1. Add a public API URL as a monitor.
+2. Set the expected HTTP status, slow-response threshold, and check interval.
+3. Run a manual check or let the scheduler check the monitor automatically.
+4. Review the result, response time, and saved history in the dashboard.
+5. Investigate recent failures in the incidents section. Configure SMTP if you also want email alerts.
+   
+Important Notes
+- Manual checks treat a 2xx response as healthy unless optional JSON response validation is enabled and fails.
+- Scheduled checks compare the response with the monitor's configured expected status code (default 200) and apply the configured latency threshold.
+- The scheduled-check success rate is based on recorded scheduled checks across monitors over the last 7 days. It is not a time-weighted SLA or an uptime guarantee for an individual monitor.
+- Checks currently use HTTP GET; request bodies and custom API authentication headers are not configured by this project.
+- URL validation blocks localhost and private-network destinations. Use public HTTP/HTTPS endpoints for monitoring.
+- This is an educational project. Before production use, consider adding authentication and authorization, rate limiting, stronger SSRF/DNS-rebinding protections, and a persistent or distributed job scheduler for multi-instance deployments.
+  
+Future Improvements
+- Authentication and role-based access
+- More notification channels
+- Advanced uptime reports and charts
+- Stronger production monitoring and deployment options
+  
+Author
+Vaibhavi Balpande
