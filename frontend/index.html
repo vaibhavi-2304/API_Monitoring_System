@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Monitoring Dashboard</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar"><div><p class="eyebrow">MONITORING CONSOLE</p><h1>API Monitoring Dashboard</h1><p class="subtitle">Automated checks, response-time analytics, uptime, and incident history.</p></div><button id="refreshBtn" class="button secondary">Refresh data</button></header>
+  <main class="container">
+    <section class="stats-grid" aria-label="Monitoring statistics">
+      <article class="stat-card"><span>Total checks</span><strong id="totalChecks">—</strong></article>
+      <article class="stat-card"><span>Successful checks</span><strong id="successfulChecks">—</strong></article>
+      <article class="stat-card"><span>Failed checks</span><strong id="failedChecks">—</strong></article>
+      <article class="stat-card"><span>Average response time</span><strong id="averageResponseTime">—</strong></article>
+      <article class="stat-card"><span>Scheduled success rate (7 days)</span><strong id="uptimePercentage">—</strong></article>
+      <article class="stat-card"><span>Active monitors</span><strong id="activeMonitors">—</strong></article>
+    </section>
+    <div id="notice" class="notice" role="status" aria-live="polite"></div>
+    <section class="panel" id="alertsPanel"><div class="panel-heading"><div><p class="eyebrow">INCIDENTS</p><h2>Recent failures</h2><p class="help">Failures from the last 7 days. Consecutive failures can trigger optional email alerts.</p></div></div><div id="alertsList" class="alerts-list"><p class="empty">No failures recorded in this period.</p></div></section>
+    <section class="panel"><div class="panel-heading"><div><p class="eyebrow">ON-DEMAND</p><h2>Check a URL now</h2><p class="help">Manual checks measure response time and record the HTTP result.</p></div></div>
+      <form id="checkForm" class="form-row"><label class="sr-only" for="checkUrl">URL to check</label><input id="checkUrl" name="url" type="url" placeholder="https://jsonplaceholder.typicode.com/posts/1" required><label class="inline-check"><input id="validateJson" type="checkbox"> Validate JSON</label><button class="button primary" type="submit" id="checkBtn">Check API</button></form><div id="manualResult" class="result-box muted">Your latest manual check will appear here.</div>
+    </section>
+    <section class="panel"><div class="panel-heading"><div><p class="eyebrow">SCHEDULED</p><h2>Automatic monitors</h2><p class="help">The backend checks active monitors even when this dashboard tab is closed, while the backend process is running.</p></div></div>
+      <form id="monitorForm" class="monitor-form">
+        <div class="input-grow"><label for="monitorUrl">Endpoint URL</label><input id="monitorUrl" name="url" type="url" placeholder="https://jsonplaceholder.typicode.com/posts/1" required></div>
+        <div class="interval-field"><label for="intervalMinutes">Interval (minutes)</label><input id="intervalMinutes" type="number" min="1" max="1440" value="1" required></div>
+        <div class="interval-field"><label for="expectedStatusCode">Expected HTTP status</label><input id="expectedStatusCode" type="number" min="100" max="599" value="200" required></div>
+        <div class="interval-field"><label for="thresholdMs">Slow threshold (ms, 0 off)</label><input id="thresholdMs" type="number" min="0" max="600000" value="0" required></div>
+        <button class="button primary" type="submit" id="addMonitorBtn">Add monitor</button>
+      </form>
+      <div class="table-wrap"><table><thead><tr><th>Endpoint</th><th>Schedule / rules</th><th>Latest status</th><th>Last checked</th><th>Actions</th></tr></thead><tbody id="monitorsBody"><tr><td colspan="5" class="empty">No monitors registered yet.</td></tr></tbody></table></div>
+    </section>
+    <section class="panel"><div class="panel-heading"><div><p class="eyebrow">DATABASE HISTORY</p><h2>Recent checks</h2><p class="help">Filter and export recorded monitoring results.</p></div><button id="exportAllBtn" class="button secondary">Export visible history CSV</button></div>
+      <div class="filters"><label>Status <select id="statusFilter"><option value="">All</option><option value="UP">UP</option><option value="DOWN">DOWN</option></select></label><label>Source <select id="sourceFilter"><option value="">All</option><option value="manual">Manual</option><option value="scheduled">Scheduled</option></select></label><label>URL contains <input id="urlFilter" type="search" placeholder="Search URL"></label><button id="filterBtn" class="button secondary" type="button">Apply filters</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Time</th><th>Endpoint</th><th>Result</th><th>HTTP status</th><th>Response time</th><th>Source</th><th>Details</th></tr></thead><tbody id="historyBody"><tr><td colspan="7" class="empty">No checks recorded yet.</td></tr></tbody></table></div>
+    </section>
+    <footer>Educational project · Uptime is calculated from recorded checks in the selected period. Keep the backend process running for scheduled checks.</footer>
+  </main><script src="app.js"></script>
+</body></html>
